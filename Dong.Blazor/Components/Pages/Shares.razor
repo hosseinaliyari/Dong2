@@ -1,0 +1,86 @@
+﻿@page "/shares"
+@using Dong.Application.Calculator
+@using Dong.Application.Crud
+@using Dong.Domain.Entities
+@using Dong.Application.Identity
+@inject ICrud Crud
+@inject IShareCalculator ShareCalculator
+@inject IIdentity Identity
+@rendermode InteractiveServer
+
+
+
+<h3>محاسبه سهم افراد</h3>
+
+<select class="form-select"
+        @bind="selectedGetTogetherId">
+    <option value="0">انتخاب دورهمی</option>
+    @foreach (var g in getTogethersForOwner)
+    {
+        <option value="@g.Id">@g.NameGetTogether</option>
+    }
+</select>
+
+<button class="btn btn-success mt-3" @onclick="Calculate">
+    محاسبه و نمایش
+</button>
+
+<p class="text-danger">@message</p>
+
+
+
+
+
+@if (shares.Any())
+{
+    <table class="table table-bordered table-striped mt-4 text-center">
+        <thead class="table-dark">
+            <tr>
+                <th>نام</th>
+                <th>پرداخت کرده</th>
+                <th>سهم هر نفر</th>
+                <th>بستانکار / بدهکار</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in shares)
+            {
+                <tr>
+                    <td >@s.User?.Name</td>
+                    <td>@s.Cost</td>
+                    <td>@s.PerShare</td>
+                    <td class="@(s.DebitCredit >= 0 ? "text-success" : "text-danger")">
+                        @s.DebitCredit
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+@code {
+    private List<GetTogether> getTogethersForOwner = new();
+    private List<Share> shares = new();
+    private int selectedGetTogetherId;
+    private string message = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        int ownerId = Identity.UserId;
+        getTogethersForOwner = Crud.GetTogethersForOwner(ownerId);
+    }
+
+    private void Calculate()
+    {
+        if (selectedGetTogetherId == 0)
+        {
+            message = "❌ لطفاً یک دورهمی انتخاب کنید";
+            return;
+        }
+
+        shares = ShareCalculator.CalculateAndSave(selectedGetTogetherId);
+        message = "✅ محاسبه انجام شد";
+    }
+}

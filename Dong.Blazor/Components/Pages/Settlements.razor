@@ -1,0 +1,80 @@
+﻿@page "/settlements"
+@using Dong.Application.Calculator
+@using Dong.Application.Crud
+@using Dong.Domain.Entities
+@using Dong.Application.Identity
+@inject ICrud Crud
+@inject IDebitCreditCalculator DebitCreditCalculator
+@inject IIdentity Identity
+@rendermode InteractiveServer
+
+
+<h3>تسویه حساب دورهمی</h3>
+
+<select class="form-select"
+        @bind="selectedGetTogetherId">
+    <option value="0">انتخاب دورهمی</option>
+    @foreach (var g in getTogethersForOwner)
+    {
+        <option value="@g.Id">@g.NameGetTogether</option>
+    }
+</select>
+
+<button class="btn btn-warning mt-3" @onclick="Calculate">
+    محاسبه تسویه
+</button>
+
+<p class="text-danger">@message</p>
+
+
+
+@if (settlements.Any())
+{
+    <table class="table table-bordered table-striped mt-4 text-center">
+        <thead class="table-dark">
+            <tr>
+                <th>بدهکار</th>
+                <th>بستانکار</th>
+                <th>مبلغ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in settlements)
+            {
+                <tr>
+                    <td>@s.FromUser.Name</td>
+                    <td>@s.ToUser.Name</td>
+                    <td class="text-danger">@s.Amount</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<GetTogether> getTogethersForOwner = new();
+    private List<Settlement> settlements = new();
+    private int selectedGetTogetherId;
+    private string message = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        int ownerId = Identity.UserId;
+        getTogethersForOwner = Crud.GetTogethersForOwner(ownerId);
+    }
+
+    private void Calculate()
+    {
+        if (selectedGetTogetherId == 0)
+        {
+            message = "❌ لطفاً یک دورهمی انتخاب کنید";
+            return;
+        }
+
+        settlements = DebitCreditCalculator.CalculateAndSaveSettlements(selectedGetTogetherId);
+
+        message = "✅ تسویه حساب انجام شد";
+    }
+}

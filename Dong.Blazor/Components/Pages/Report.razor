@@ -1,0 +1,75 @@
+﻿@page "/report"
+@using Dong.Application.Calculator
+@using Dong.Application.Crud
+@using Dong.Domain.Entities
+@using Dong.Application.Identity
+@inject ICrud Crud
+@inject IDebitCreditCalculator DebitCreditCalculator
+@inject IIdentity Identity
+@rendermode InteractiveServer
+
+
+<h3> گزارش مالی شخص</h3>
+<input class="form-control"
+       placeholder="شماره موبایل"
+       @bind="mobile" />
+
+<button class="btn btn-primary mt-2" @onclick="Search">
+    نمایش گزارش
+</button>
+
+<p class="text-danger">@message</p>
+
+
+
+@if (report != null)
+{
+
+    <div class="alert alert-info mt-3">
+        <b>@report[0].ToUser.Name</b>
+    </div>
+    <table class="table table-bordered text-center mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>دورهمی</th>
+                <th>از</th>
+                <th>به</th>
+                <th>مبلغ</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in report)
+            {
+                <tr>
+                    <td>@s.getTogether.NameGetTogether</td>
+                    <td>@s.FromUser.Name</td>
+                    <td>@s.ToUser.Name</td>
+                    <td>@s.Amount.ToString("N0")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+@code {
+    private string mobile = string.Empty;
+    private string message = string.Empty;
+    private List<Settlement>?  report;
+
+    private void Search()
+    {
+        report = Crud.GetUserFinancialReport(mobile).ToList();
+
+        if (report == null)
+        {
+            message = "❌ کاربری با این شماره یافت نشد";
+        }
+        else
+        {
+            message = string.Empty;
+        }
+    }
+}
+

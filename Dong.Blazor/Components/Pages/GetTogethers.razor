@@ -1,0 +1,50 @@
+﻿@page "/gettogethers"
+@using Dong.Application.Crud
+@using Dong.Application.Identity
+@inject ICrud Crud
+@inject IIdentity Identity
+@rendermode InteractiveServer
+
+
+    
+
+<h3>ایجاد دورهمی</h3>
+
+<input class="form-control" placeholder="نام دورهمی" @bind="name" />
+<br />
+
+
+<button class="btn btn-primary" @onclick="Create">
+    ثبت
+</button>
+<br />
+<p>@message</p>
+
+
+@code {
+    private string name = string.Empty;
+    private string message = "";
+    private  void Create()
+    {
+        var userId = Identity.UserId;
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            message = "❌ نام دورهمی را وارد کنید";
+            return;
+        }
+
+        if (userId <= 0)
+        {
+            message = "❌ شناسه کاربر معتبر نیست";
+            return;
+        }
+        bool success = Crud.AddGetTogethers(name, userId, out string error);
+        if (!success)
+        {
+            message = error;
+            return;
+        }
+        message = $"دورهمی {name} برای کد کاربری شماره {userId} فعال شد.";
+    }
+}
+

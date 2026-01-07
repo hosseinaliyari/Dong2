@@ -1,0 +1,102 @@
+﻿@page "/expenses"
+@using Dong.Application.Crud
+@using Dong.Application.Identity
+@using Dong.Domain.Entities
+@using Dong.Infrastructure.Crud
+
+@inject ICrud Crud
+@inject IIdentity Identity
+@rendermode InteractiveServer
+
+
+<h3>انتخاب دورهمی</h3>
+<select class="form-select" @bind="selectedGetTogetherId" @bind:after="OnGetTogetherChanged">
+    <option value="0">انتخاب دورهمی</option>
+    @foreach (var g in getTogethersForOwner)
+    {
+        <option value="@g.Id">@g.NameGetTogether</option>
+    }
+</select>
+
+
+<br />
+
+<h3>شخص هزینه‌کننده</h3>
+<select class="form-select" @bind="selectedUserId">
+    <option value="0">انتخاب هزینه‌کننده</option>
+
+    @foreach (var p in participations)
+    {
+        <option value="@p.UserId">
+            @p.User.Name
+        </option>
+    }
+</select>
+
+
+
+<br />
+<h3>هزینه</h3>
+<input class="form-control" placeholder="شرح هزینه انجام شده" @bind="description" />
+<br />
+<h3>مبلغ</h3>
+<input class="form-control" type="number" placeholder=" مبلغ هزینه شده" @bind="cost" />
+<br />
+
+<button class="btn btn-primary" @onclick="Create">
+    ثبت
+</button>
+<br />
+<p>@message</p>
+
+
+
+@code{
+    private List<GetTogether> getTogethersForOwner = new();
+    private List<Dong.Domain.Entities.Participation> participations = new();
+    private int selectedGetTogetherId;
+    private int selectedUserId;
+    private string description = string.Empty;
+    private decimal cost;
+    private string message = string.Empty; 
+
+
+    protected override void OnInitialized()
+    {
+        int owneruserId = Identity.UserId;
+        getTogethersForOwner = Crud.GetTogethersForOwner(owneruserId);
+    }
+    private void OnGetTogetherChanged()
+    {
+        if (selectedGetTogetherId == 0)
+        {
+            participations.Clear();
+            return;
+        }
+
+        participations =
+            Crud.GetParticipationsByGetTogether(selectedGetTogetherId);
+    }
+
+
+    private void Create()
+    {
+        if (selectedGetTogetherId == 0 || selectedUserId == 0)
+        {
+            message = "❌ دورهمی و هزینه‌کننده را انتخاب کنید";
+            return;
+        }
+
+        Crud.AddExpense(
+            selectedUserId,
+            description,
+            cost,
+            selectedGetTogetherId
+        );
+
+        message = "✅ هزینه ثبت شد";
+    }
+
+    
+
+}
