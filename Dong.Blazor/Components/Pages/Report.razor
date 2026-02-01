@@ -24,7 +24,6 @@
 
 @if (report != null)
 {
-
     <div class="alert alert-info mt-3">
         <b>@report[0].ToUser.Name</b>
     </div>
@@ -61,14 +60,9 @@
     private void Search()
     {
         report = Crud.GetUserFinancialReport(mobile).ToList();
-
         if (report == null)
         {
             message = "❌ کاربری با این شماره یافت نشد";
-        }
-        else
-        {
-            message = string.Empty;
         }
     }
 }

@@ -18,5 +18,6 @@ namespace Dong.Application.Crud
         public List<GetTogether> GetTogethersForOwner(int userId);
         public int? FindUserByMobile(string mobile);
         public List<Settlement> GetUserFinancialReport(string mobile);
+        public List<Share> GetShare(int getTogetherId);
     }
 }

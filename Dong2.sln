@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dong.Domain", "Dong.Domain\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dong.Infrastructure", "Dong.Infrastructure\Dong.Infrastructure.csproj", "{7DB74102-9805-4206-A295-FF7333EF8307}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dong.TestsConsoleApp", "ConsoleApp1\Dong.TestsConsoleApp.csproj", "{B0F706F5-B2D6-4F9D-891A-7DE7C32A2470}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dong.Application", "Dong.Application\Dong.Application.csproj", "{F3211F67-98EE-45D1-A6CF-E86A8BF4E20A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dong.Blazor", "Dong.Blazor\Dong.Blazor.csproj", "{0AF139C1-848E-4A83-8722-9ACB1194EC71}"
@@ -27,10 +25,6 @@ Global
 		{7DB74102-9805-4206-A295-FF7333EF8307}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DB74102-9805-4206-A295-FF7333EF8307}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DB74102-9805-4206-A295-FF7333EF8307}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B0F706F5-B2D6-4F9D-891A-7DE7C32A2470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0F706F5-B2D6-4F9D-891A-7DE7C32A2470}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0F706F5-B2D6-4F9D-891A-7DE7C32A2470}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0F706F5-B2D6-4F9D-891A-7DE7C32A2470}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F3211F67-98EE-45D1-A6CF-E86A8BF4E20A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F3211F67-98EE-45D1-A6CF-E86A8BF4E20A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3211F67-98EE-45D1-A6CF-E86A8BF4E20A}.Release|Any CPU.ActiveCfg = Release|Any CPU

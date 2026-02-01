@@ -1,6 +1,7 @@
 ﻿using Dong.Application.Calculator;
 using Dong.Domain.Entities;
 using Dong.Infrastructure.dbContext;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace Dong.Infrastructure.Calculator
         }
         public List<Share> CalculateAndSave(int getTogetherId)
         {
-            var expenses = _context.Expenses
+            var expenses = _context.Expenses                
                 .Where(e => e.GetTogetherId == getTogetherId)
                 .ToList();
 
@@ -27,6 +28,7 @@ namespace Dong.Infrastructure.Calculator
                 .ToList();
             if (!participations.Any())
                 throw new Exception("هیچ شرکت‌کننده‌ای برای این دورهمی وجود ندارد");
+
             var participationsCount =_context.Participations.Where(p=> p.GetTogetherId==getTogetherId).Select(p=> p.UserId).Distinct().Count();
             decimal sumCost = expenses.Sum(e => e.Cost);
             decimal perShare = sumCost / participationsCount;
@@ -37,7 +39,7 @@ namespace Dong.Infrastructure.Calculator
 
             var result = participations.Select(p =>
             {
-                decimal paid = expenses
+                decimal paid = expenses                  
                     .Where(e => e.UserId == p.UserId)
                     .Sum(e => e.Cost);
                 return new Share

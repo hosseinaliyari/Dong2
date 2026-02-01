@@ -43,10 +43,10 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var s in shares)
+            @foreach (var s in sh)
             {
                 <tr>
-                    <td >@s.User?.Name</td>
+                    <td>@s.User.Name</td>
                     <td>@s.Cost</td>
                     <td>@s.PerShare</td>
                     <td class="@(s.DebitCredit >= 0 ? "text-success" : "text-danger")">
@@ -63,6 +63,7 @@
 @code {
     private List<GetTogether> getTogethersForOwner = new();
     private List<Share> shares = new();
+    private List<Share> sh = new();
     private int selectedGetTogetherId;
     private string message = string.Empty;
 
@@ -81,6 +82,7 @@
         }
 
         shares = ShareCalculator.CalculateAndSave(selectedGetTogetherId);
+        sh = Crud.GetShare(selectedGetTogetherId);
         message = "✅ محاسبه انجام شد";
     }
 }

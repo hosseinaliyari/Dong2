@@ -99,6 +99,10 @@ namespace Dong.Infrastructure.Crud
             return _context.Participations.Include(p => p.User).Where(p => p.GetTogetherId == getTogetherId).ToList();
         }
 
+        public List<Share> GetShare(int getTogetherId)
+        {
+            return _context.Shares.Include(s=> s.User).Where(p => p.GetTogetherId == getTogetherId).ToList();
+        }
 
         public List<GetTogether> GetTogethersForOwner(int userId)
         {
@@ -108,12 +112,13 @@ namespace Dong.Infrastructure.Crud
 
         public List<Settlement> GetUserFinancialReport(string mobile)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Mobile == mobile);
+            var user = _context.Users.FirstOrDefault(u => u.Mobile.ToString() == mobile);
             if (user == null)
                 return null;
             var settlements = _context.Settlements
                 .Include(s => s.FromUser)
                 .Include(s => s.ToUser)
+                .Include(s => s.getTogether)
                 .Where(s => s.FromUserId == user.Id || s.ToUserId == user.Id)
                 .ToList();
             return settlements;
