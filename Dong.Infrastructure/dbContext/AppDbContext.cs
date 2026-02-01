@@ -21,6 +21,7 @@ namespace Dong.Infrastructure.dbContext
         public DbSet<Participation> Participations { get; set; }
         public DbSet<Share> Shares { get; set; }
         public DbSet<Settlement> Settlements { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -48,6 +49,11 @@ namespace Dong.Infrastructure.dbContext
 
             modelBuilder.Entity<Share>()
                 .ToTable("Shares", schema: "finance");
+
+
+            modelBuilder.Entity<Payment>()
+                .ToTable("Payment", schema: "finance");
+
             // Participation Composite Key
             modelBuilder.Entity<Participation>()
                 .HasKey(p => new { p.UserId, p.GetTogetherId });
@@ -103,6 +109,17 @@ namespace Dong.Infrastructure.dbContext
                 .HasForeignKey(s => s.ToUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.FromUser)
+                .WithMany()
+                .HasForeignKey(p => p.FromUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Payment>()
+                .HasOne(p => p.ToUser)
+                .WithMany()
+                .HasForeignKey(p => p.ToUserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
 

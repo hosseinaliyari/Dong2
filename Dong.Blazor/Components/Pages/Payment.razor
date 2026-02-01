@@ -1,0 +1,122 @@
+﻿@page "/payment"
+@using Dong.Application.Crud
+@using Dong.Domain.Entities
+@using Dong.Application.Identity
+@inject ICrud Crud
+@inject IIdentity Identity
+@rendermode InteractiveServer
+
+<h3>ثبت پرداخت</h3>
+
+<!-- انتخاب دورهمی -->
+<h3>انتخاب دورهمی</h3>
+<select class="form-select" @bind="selectedGetTogetherId" @bind:after="OnGetTogetherChanged">
+    <option value="0">انتخاب دورهمی</option>
+    @foreach (var g in getTogethersForOwner)
+    {
+        <option value="@g.Id">@g.NameGetTogether</option>
+    }
+</select>
+<br />
+
+@if (participations.Any())
+{
+    <!-- بدهکار -->
+    <select class="form-select mb-3" @bind="fromUserId">
+        <option value="0">پرداخت‌کننده (بدهکار)</option>
+        @foreach (var p in participations)
+        {
+            <option value="@p.UserId">@p.User.Name</option>
+        }
+    </select>
+
+    <!-- بستانکار -->
+    <select class="form-select mb-3" @bind="toUserId">
+        <option value="0">دریافت‌کننده (بستانکار)</option>
+        @foreach (var p in participations)
+        {
+            <option value="@p.UserId">@p.User.Name</option>
+        }
+    </select>
+
+    <!-- مبلغ -->
+    <input class="form-control mb-3"
+           type="number"
+           placeholder="مبلغ پرداختی"
+           @bind="amount" />
+
+    <button class="btn btn-success" @onclick="SavePayment">
+        ثبت پرداخت
+    </button>
+}
+
+<p class="mt-3 text-danger">@message</p>
+
+
+
+
+@code{
+    private List<GetTogether> getTogethersForOwner = new();
+    private List<Dong.Domain.Entities.Participation> participations = new();
+    private int selectedGetTogetherId;
+    private int fromUserId;
+    private int toUserId;
+    private decimal amount;
+    private string message = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        int owneruserId = Identity.UserId;
+        getTogethersForOwner = Crud.GetTogethersForOwner(owneruserId);
+    }
+    private void OnGetTogetherChanged()
+    {
+        if (selectedGetTogetherId == 0)
+        {
+            participations.Clear();
+            return;
+        }
+
+        participations =
+            Crud.GetParticipationsByGetTogether(selectedGetTogetherId);
+    }
+
+
+    private void SavePayment()
+    {
+        if (selectedGetTogetherId == 0 ||
+            fromUserId == 0 ||
+            toUserId == 0)
+        {
+            message = "❌ همه فیلدها را کامل کنید";
+            return;
+        }
+
+        if (fromUserId == toUserId)
+        {
+            message = "❌ پرداخت‌کننده و دریافت‌کننده نمی‌توانند یکی باشند";
+            return;
+        }
+
+        if (amount <= 0)
+        {
+            message = "❌ مبلغ نامعتبر است";
+            return;
+        }
+
+        Crud.AddPayment(
+            fromUserId,
+            toUserId,
+            amount,
+            selectedGetTogetherId
+        );
+
+        message = "✅ پرداخت با موفقیت ثبت شد";
+
+        // reset
+        amount = 0;
+        fromUserId = 0;
+        toUserId = 0;
+    }
+
+}

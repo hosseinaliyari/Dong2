@@ -3,6 +3,7 @@ using Dong.Domain.Entities;
 using Dong.Infrastructure.dbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Linq;
 
 namespace Dong.Infrastructure.Crud
 {
@@ -73,6 +74,19 @@ namespace Dong.Infrastructure.Crud
             return true;
         }
 
+        public void AddPayment(int fromUserId, int toUserId, decimal amount, int getTogetherId)
+        {
+            var payment = new Payment
+            {
+                FromUserId = fromUserId,
+                ToUserId = toUserId,
+                Amount = amount,
+                DateTime = DateTime.UtcNow,
+                GetTogetherId = getTogetherId
+            };
+            _context.Payments.Add(payment);
+            _context.SaveChanges();
+        }
 
         public void AddUser(string name, string mobile, string pass)
         {
@@ -108,6 +122,20 @@ namespace Dong.Infrastructure.Crud
         {
             return _context.GetTogethers.Where(g => g.UserId == userId).ToList();
             
+        }
+
+        public List<Settlement> GetUserFinalReport(int userId)
+        {
+            var settlements = _context.Settlements
+                .Where(s => s.FromUserId == userId || s.ToUserId == userId)
+                .Include(s => s.FromUser)
+                .Include(s => s.ToUser)
+                .ToList();
+            var payments = _context.Payments 
+                .Where(p => p.FromUserId == userId || p.ToUserId == userId)
+                .ToList();
+            var combinedData = settlements.Union(payments).ToList();
+
         }
 
         public List<Settlement> GetUserFinancialReport(string mobile)
