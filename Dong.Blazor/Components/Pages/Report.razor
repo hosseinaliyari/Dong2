@@ -3,6 +3,7 @@
 @using Dong.Application.Crud
 @using Dong.Domain.Entities
 @using Dong.Application.Identity
+@using Dong.Infrastructure.Calculator
 @inject ICrud Crud
 @inject IDebitCreditCalculator DebitCreditCalculator
 @inject IIdentity Identity
@@ -39,8 +40,8 @@
             {
                 <tr>
                     <td>@s.getTogether.NameGetTogether</td>
-                    <td>@s.FromUser.Name</td>
-                    <td>@s.ToUser.Name</td>
+                    <td>@s.FromUserId</td>
+                    <td>@s.ToUserId</td>
                     <td>@s.Amount.ToString("N0")</td>
                 </tr>
             }
@@ -50,10 +51,12 @@
 
 
 
+
 @code {
     private string mobile = string.Empty;
     private string message = string.Empty;
     private List<Settlement>?  report;
+    private List<FinancialLedger> reports = new();
 
     private void Search()
     {

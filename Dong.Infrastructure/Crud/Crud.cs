@@ -1,9 +1,11 @@
 ﻿using Dong.Application.Crud;
 using Dong.Domain.Entities;
+using Dong.Infrastructure.Calculator;
 using Dong.Infrastructure.dbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Linq;
+using System.Reflection;
 
 namespace Dong.Infrastructure.Crud
 {
@@ -124,28 +126,56 @@ namespace Dong.Infrastructure.Crud
             
         }
 
-        public List<Settlement> GetUserFinalReport(int userId)
+        public List<FinancialLedger> GetUserFinalReport(string mobile)
         {
-            var settlements = _context.Settlements
-                .Where(s => s.FromUserId == userId || s.ToUserId == userId)
-                .Include(s => s.FromUser)
-                .Include(s => s.ToUser)
-                .ToList();
-            var payments = _context.Payments 
-                .Where(p => p.FromUserId == userId || p.ToUserId == userId)
-                .ToList();
-            var combinedData = settlements.Union(payments).ToList();
+            var userfull = _context.Users;
+            var userId = userfull.Where(u => u.Mobile.ToString() == mobile).Select(u => (int)u.Id).FirstOrDefault();
 
+
+            var settlements = _context.Settlements
+                .Include(s => s.Users)
+                .Where(s => s.FromUserId == userId || s.ToUserId == userId)
+                .Select(s => new FinancialLedger
+                {
+                    FromUserId = s.FromUserId,
+                    ToUserId = s.ToUserId,
+                    Balance = s.Amount
+                });
+
+            var payments = _context.Payments
+                .Include(s => s.Users)
+                .Where(p => p.FromUserId == userId || p.ToUserId == userId)
+                .Select(p => new FinancialLedger
+                {
+                    FromUserId = p.FromUserId,
+                    ToUserId = p.ToUserId,
+                    Balance = -p.Amount
+                });
+
+            var ledger = settlements.Concat(payments);
+
+            var finalReport = ledger
+                .GroupBy(x => new { x.FromUserId, x.ToUserId })
+                .Select(g => new FinancialLedger
+                {
+                    FromUserId = g.Key.FromUserId,                    
+                    ToUserId = g.Key.ToUserId, 
+                    FromName = userfull.Where(x=> x.Id== g.Key.FromUserId).FirstOrDefault().Name.ToString(), 
+                    ToName = userfull.Where(x => x.Id == g.Key.ToUserId).FirstOrDefault().Name.ToString(),
+                    Balance = g.Sum(x => x.Balance)
+                })
+                .Where(x => x.Balance != 0)
+                .ToList();
+
+            return finalReport;
         }
 
         public List<Settlement> GetUserFinancialReport(string mobile)
         {
             var user = _context.Users.FirstOrDefault(u => u.Mobile.ToString() == mobile);
-            if (user == null)
-                return null;
+
             var settlements = _context.Settlements
-                .Include(s => s.FromUser)
-                .Include(s => s.ToUser)
+                .Include(s => s.Users)
                 .Include(s => s.getTogether)
                 .Where(s => s.FromUserId == user.Id || s.ToUserId == user.Id)
                 .ToList();

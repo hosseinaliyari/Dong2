@@ -98,30 +98,16 @@ namespace Dong.Infrastructure.dbContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Settlement>()
-                .HasOne(s => s.FromUser)
+                .HasOne(s => s.Users)
                 .WithMany()
                 .HasForeignKey(s => s.FromUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Settlement>()
-                .HasOne(s => s.ToUser)
-                .WithMany()
-                .HasForeignKey(s => s.ToUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Payment>()
-                .HasOne(p => p.FromUser)
+                .HasOne(p => p.Users)
                 .WithMany()
                 .HasForeignKey(p => p.FromUserId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Payment>()
-                .HasOne(p => p.ToUser)
-                .WithMany()
-                .HasForeignKey(p => p.ToUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-
 
 
             base.OnModelCreating(modelBuilder);

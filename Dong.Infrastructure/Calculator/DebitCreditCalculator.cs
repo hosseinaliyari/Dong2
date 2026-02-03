@@ -76,8 +76,7 @@ namespace Dong.Infrastructure.Calculator
             _context.SaveChanges();
 
             return _context.Settlements
-                .Include(s => s.FromUser)
-                .Include(s => s.ToUser)
+                .Include(s => s.Users)
                 .Where(s => s.GetTogetherId == getTogetherId)
                 .ToList();
 

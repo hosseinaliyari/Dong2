@@ -1,0 +1,57 @@
+﻿@page "/reportNew"
+@using Dong.Application.Calculator
+@using Dong.Application.Crud
+@using Dong.Domain.Entities
+@using Dong.Application.Identity
+@using Dong.Infrastructure.Calculator
+@using Dong.Infrastructure.Crud
+@inject ICrud Crud
+@inject IDebitCreditCalculator DebitCreditCalculator
+@inject IIdentity Identity
+@rendermode InteractiveServer
+
+<input class="form-control"
+       placeholder="شماره موبایل"
+       @bind="mobile" />
+<button class="btn btn-primary mt-2" @onclick="Search">
+    نمایش گزارش
+</button>
+<p class="text-danger">@message</p>
+<table class="table table-bordered text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>از</th>
+            <th>به</th>
+            <th>مانده حساب</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in reports)
+        {
+            <tr>
+                <td>@r.FromUserId</td>
+                <td>@r.ToUserId</td>
+                <td class="@(r.Balance < 0 ? "text-danger" : "text-success")">
+                    @r.Balance.ToString("N0")
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private List<FinancialLedger> reports = new();
+    private string mobile = string.Empty;
+    private string message = string.Empty;
+
+
+    private void Search()
+    {
+        reports = Crud.GetUserFinalReport(mobile);
+        if (reports == null)
+        {
+            message = "❌ کاربری با این شماره یافت نشد";
+        }
+    }
+}

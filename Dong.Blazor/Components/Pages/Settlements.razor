@@ -42,8 +42,8 @@
             @foreach (var s in settlements)
             {
                 <tr>
-                    <td>@s.FromUser.Name</td>
-                    <td>@s.ToUser.Name</td>
+                    <td>@s.FromUserId</td>
+                    <td>@s.ToUserId</td>
                     <td class="text-danger">@s.Amount</td>
                 </tr>
             }

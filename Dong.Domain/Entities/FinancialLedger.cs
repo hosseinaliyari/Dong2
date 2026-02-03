@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Dong.Domain.Entities
 {
-    public class Settlement : BaseEntity
+    public class FinancialLedger
     {
-        public int GetTogetherId { get; set; }
-        public GetTogether getTogether { get; set; }
         public int FromUserId { get; set; }
         public int ToUserId { get; set; }
-         public User Users { get; set; }
-        public decimal Amount { get; set; }
+        public User User { get; set; }
+        public decimal Balance { get; set; }
+        public string FromName { get; set; }
+        public string ToName { get; set; }
     }
 }
