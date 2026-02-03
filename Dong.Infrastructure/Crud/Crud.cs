@@ -1,11 +1,13 @@
 ﻿using Dong.Application.Crud;
 using Dong.Domain.Entities;
+using Dong.Domain.EntityDto;
 using Dong.Infrastructure.Calculator;
 using Dong.Infrastructure.dbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Dong.Infrastructure.Crud
 {
@@ -170,16 +172,34 @@ namespace Dong.Infrastructure.Crud
             return finalReport;
         }
 
-        public List<Settlement> GetUserFinancialReport(string mobile)
+        public List<FinalSettelmentDto> GetUserFinancialReport(string mobile)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Mobile.ToString() == mobile);
+            var user = _context.Users;
+            var userm = _context.Users.FirstOrDefault(u => u.Mobile.ToString() == mobile);
 
             var settlements = _context.Settlements
                 .Include(s => s.Users)
                 .Include(s => s.getTogether)
-                .Where(s => s.FromUserId == user.Id || s.ToUserId == user.Id)
+                .Where(s => s.FromUserId == userm.Id || s.ToUserId == userm.Id)
                 .ToList();
-            return settlements;
+
+            List<FinalSettelmentDto> finalReport = new List<FinalSettelmentDto>();
+            foreach (var item in settlements)
+            {
+                finalReport.Add(new FinalSettelmentDto()
+                {
+
+                    ToName = user.Where(X=>X.Id==item.ToUserId).FirstOrDefault().Name,
+                    ToUserId = item.ToUserId,
+                    Amount = item.Amount,
+                    FromName = user.Where(X => X.Id == item.FromUserId).FirstOrDefault().Name,
+                    FromUserId = item.FromUserId,
+                    getTogether = item.getTogether,
+                    GetTogetherId = item.GetTogetherId,
+                });
+            }
+
+            return finalReport;
         }
     }
 }

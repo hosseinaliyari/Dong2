@@ -1,4 +1,5 @@
 ﻿using Dong.Domain.Entities;
+using Dong.Domain.EntityDto;
 
 
 namespace Dong.Application.Crud
@@ -12,7 +13,7 @@ namespace Dong.Application.Crud
         public void AddExpense(int userId, string description, decimal cost, int getTogetherId);
         public List<GetTogether> GetTogethersForOwner(int userId);
         public int? FindUserByMobile(string mobile);
-        public List<Settlement> GetUserFinancialReport(string mobile);
+        public List<FinalSettelmentDto> GetUserFinancialReport(string mobile);
         public List<Share> GetShare(int getTogetherId);
         public void AddPayment(int fromUserId, int toUserId, decimal amount, int getTogetherId);
 

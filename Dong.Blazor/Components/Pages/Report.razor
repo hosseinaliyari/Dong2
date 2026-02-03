@@ -3,6 +3,7 @@
 @using Dong.Application.Crud
 @using Dong.Domain.Entities
 @using Dong.Application.Identity
+@using Dong.Domain.EntityDto
 @using Dong.Infrastructure.Calculator
 @inject ICrud Crud
 @inject IDebitCreditCalculator DebitCreditCalculator
@@ -31,7 +32,7 @@
             <tr>
                 <th>دورهمی</th>
                 <th>پرداخت کنند</th>
-                <th>دریافت کننده</th> 
+                <th>دریافت کننده</th>
                 <th>مبلغ</th>
             </tr>
         </thead>
@@ -40,8 +41,8 @@
             {
                 <tr>
                     <td>@s.getTogether.NameGetTogether</td>
-                    <td>@s.FromUserId</td>
-                    <td>@s.ToUserId</td>
+                    <td>@s.FromName</td>                    
+                    <td>@s.ToName</td>                    
                     <td>@s.Amount.ToString("N0")</td>
                 </tr>
             }
@@ -55,12 +56,12 @@
 @code {
     private string mobile = string.Empty;
     private string message = string.Empty;
-    private List<Settlement>?  report;
+    private List<FinalSettelmentDto> report;
     private List<FinancialLedger> reports = new();
 
     private void Search()
     {
-        report = Crud.GetUserFinancialReport(mobile).ToList();
+        report = Crud.GetUserFinancialReport(mobile);
         if (report == null)
         {
             message = "❌ کاربری با این شماره یافت نشد";

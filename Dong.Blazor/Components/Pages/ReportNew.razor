@@ -29,8 +29,8 @@
         @foreach (var r in reports)
         {
             <tr>
-                <td>@r.FromUserId</td>
-                <td>@r.ToUserId</td>
+                <td>@r.FromName</td>
+                <td>@r.ToName</td>
                 <td class="@(r.Balance < 0 ? "text-danger" : "text-success")">
                     @r.Balance.ToString("N0")
                 </td>
