@@ -1,71 +1,103 @@
 ﻿@page "/report"
-@using Dong.Application.Calculator
 @using Dong.Application.Crud
-@using Dong.Domain.Entities
 @using Dong.Application.Identity
 @using Dong.Domain.EntityDto
-@using Dong.Infrastructure.Calculator
 @inject ICrud Crud
-@inject IDebitCreditCalculator DebitCreditCalculator
 @inject IIdentity Identity
 @rendermode InteractiveServer
 
+<div class="dong-topbar">
+    <div>
+        <div class="dong-page-title">گزارش تفصیلی</div>
+        <div class="dong-page-sub">گزارش کامل تراکنش‌های مالی یک کاربر</div>
+    </div>
+</div>
 
-<h3> گزارش مالی شخص</h3>
-<input class="form-control"
-       placeholder="شماره موبایل"
-       @bind="mobile" />
+<div class="dong-content">
 
-<button class="btn btn-primary mt-2" @onclick="Search">
-    نمایش گزارش
-</button>
+    <div class="dong-card">
+        <div class="dong-card-header">
+            <span class="header-icon">🔍</span>
+            جستجوی کاربر
+        </div>
+        <div class="dong-form-row" style="align-items:flex-end">
+            <div class="dong-form-group">
+                <label>شماره موبایل</label>
+                <input class="dong-input" placeholder="مثال: 09121234567" @bind="mobile" @bind:event="oninput" />
+            </div>
+            <div>
+                <button class="dong-btn dong-btn-primary" @onclick="Search">
+                    📊 &nbsp;نمایش گزارش
+                </button>
+            </div>
+        </div>
 
-<p class="text-danger">@message</p>
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="dong-alert dong-alert-danger">@message</div>
+        }
+    </div>
 
+    @if (report != null && report.Any())
+    {
+        <div class="dong-card">
+            <div class="dong-card-header">
+                <span class="header-icon">📋</span>
+                نتایج گزارش برای @mobile
+            </div>
+            <div class="dong-table-wrap">
+                <table class="dong-table">
+                    <thead>
+                        <tr>
+                            <th>دورهمی</th>
+                            <th>پرداخت‌کننده</th>
+                            <th>دریافت‌کننده</th>
+                            <th>مبلغ (تومان)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in report)
+                        {
+                            <tr>
+                                <td>@s.getTogether?.NameGetTogether</td>
+                                <td>@s.FromName</td>
+                                <td>@s.ToName</td>
+                                <td class="text-danger">@s.Amount.ToString("N0")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else if (searched && (report == null || !report.Any()))
+    {
+        <div class="dong-card">
+            <div class="dong-empty">
+                <div class="dong-empty-icon">📭</div>
+                <p>هیچ تراکنشی برای این شماره یافت نشد</p>
+            </div>
+        </div>
+    }
 
-
-@if (report != null)
-{
-
-    <table class="table table-bordered text-center mt-3">
-        <thead class="table-dark">
-            <tr>
-                <th>دورهمی</th>
-                <th>پرداخت کنند</th>
-                <th>دریافت کننده</th>
-                <th>مبلغ</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var s in report)
-            {
-                <tr>
-                    <td>@s.getTogether.NameGetTogether</td>
-                    <td>@s.FromName</td>                    
-                    <td>@s.ToName</td>                    
-                    <td>@s.Amount.ToString("N0")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-
-
+</div>
 
 @code {
     private string mobile = string.Empty;
     private string message = string.Empty;
-    private List<FinalSettelmentDto> report;
-    private List<FinancialLedger> reports = new();
+    private List<FinalSettelmentDto>? report;
+    private bool searched = false;
 
     private void Search()
     {
+        message = string.Empty;
+        searched = true;
+
+        if (string.IsNullOrWhiteSpace(mobile))
+        { message = "❌ شماره موبایل را وارد کنید"; return; }
+
         report = Crud.GetUserFinancialReport(mobile);
         if (report == null)
-        {
             message = "❌ کاربری با این شماره یافت نشد";
-        }
     }
 }
-

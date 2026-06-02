@@ -1,63 +1,99 @@
 ﻿@page "/payment"
 @using Dong.Application.Crud
-@using Dong.Domain.Entities
 @using Dong.Application.Identity
+@using Dong.Domain.Entities
 @inject ICrud Crud
 @inject IIdentity Identity
 @rendermode InteractiveServer
 
-<h3>ثبت پرداخت</h3>
+<div class="dong-topbar">
+    <div>
+        <div class="dong-page-title">پرداخت</div>
+        <div class="dong-page-sub">ثبت پرداخت‌های انجام‌شده بین اعضا</div>
+    </div>
+</div>
 
-<!-- انتخاب دورهمی -->
-<h3>انتخاب دورهمی</h3>
-<select class="form-select" @bind="selectedGetTogetherId" @bind:after="OnGetTogetherChanged">
-    <option value="0">انتخاب دورهمی</option>
-    @foreach (var g in getTogethersForOwner)
-    {
-        <option value="@g.Id">@g.NameGetTogether</option>
-    }
-</select>
-<br />
+<div class="dong-content">
 
-@if (participations.Any())
-{
-    <!-- بدهکار -->
-    <select class="form-select mb-3" @bind="fromUserId">
-        <option value="0">پرداخت‌کننده (بدهکار)</option>
-        @foreach (var p in participations)
+    <div class="dong-card">
+        <div class="dong-card-header">
+            <span class="header-icon">💳</span>
+            ثبت پرداخت جدید
+        </div>
+
+        <div class="dong-form-row single">
+            <div class="dong-form-group">
+                <label>دورهمی</label>
+                <div class="dong-select-wrap">
+                    <select class="dong-select" @bind="selectedGetTogetherId" @bind:after="OnGetTogetherChanged">
+                        <option value="0">انتخاب دورهمی</option>
+                        @foreach (var g in getTogethersForOwner)
+                        {
+                            <option value="@g.Id">@g.NameGetTogether</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        @if (participations.Any())
         {
-            <option value="@p.UserId">@p.User.Name</option>
-        }
-    </select>
+            <div class="dong-form-row">
+                <div class="dong-form-group">
+                    <label>پرداخت‌کننده (بدهکار)</label>
+                    <div class="dong-select-wrap">
+                        <select class="dong-select" @bind="fromUserId">
+                            <option value="0">انتخاب شخص</option>
+                            @foreach (var p in participations)
+                            {
+                                <option value="@p.UserId">@p.User.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="dong-form-group">
+                    <label>دریافت‌کننده (بستانکار)</label>
+                    <div class="dong-select-wrap">
+                        <select class="dong-select" @bind="toUserId">
+                            <option value="0">انتخاب شخص</option>
+                            @foreach (var p in participations)
+                            {
+                                <option value="@p.UserId">@p.User.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
 
-    <!-- بستانکار -->
-    <select class="form-select mb-3" @bind="toUserId">
-        <option value="0">دریافت‌کننده (بستانکار)</option>
-        @foreach (var p in participations)
+            <div class="dong-form-row single">
+                <div class="dong-form-group">
+                    <label>مبلغ پرداختی (تومان)</label>
+                    <input class="dong-input" type="number" placeholder="0" @bind="amount" />
+                </div>
+            </div>
+
+            <button class="dong-btn dong-btn-primary" @onclick="SavePayment">
+                ✓ &nbsp;ثبت پرداخت
+            </button>
+        }
+        else if (selectedGetTogetherId > 0)
         {
-            <option value="@p.UserId">@p.User.Name</option>
+            <div class="dong-alert dong-alert-danger">هیچ عضوی در این دورهمی ثبت نشده</div>
         }
-    </select>
 
-    <!-- مبلغ -->
-    <input class="form-control mb-3"
-           type="number"
-           placeholder="مبلغ پرداختی"
-           @bind="amount" />
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="dong-alert @(message.StartsWith("✅") ? "dong-alert-success" : "dong-alert-danger")">
+                @message
+            </div>
+        }
+    </div>
 
-    <button class="btn btn-success" @onclick="SavePayment">
-        ثبت پرداخت
-    </button>
-}
+</div>
 
-<p class="mt-3 text-danger">@message</p>
-
-
-
-
-@code{
+@code {
     private List<GetTogether> getTogethersForOwner = new();
-    private List<Dong.Domain.Entities.Participation> participations = new();
+    private List<Participation> participations = new();
     private int selectedGetTogetherId;
     private int fromUserId;
     private int toUserId;
@@ -66,57 +102,29 @@
 
     protected override void OnInitialized()
     {
-        int owneruserId = Identity.UserId;
-        getTogethersForOwner = Crud.GetTogethersForOwner(owneruserId);
+        getTogethersForOwner = Crud.GetTogethersForOwner(Identity.UserId);
     }
+
     private void OnGetTogetherChanged()
     {
-        if (selectedGetTogetherId == 0)
-        {
-            participations.Clear();
-            return;
-        }
-
-        participations =
-            Crud.GetParticipationsByGetTogether(selectedGetTogetherId);
+        participations.Clear();
+        fromUserId = toUserId = 0;
+        if (selectedGetTogetherId > 0)
+            participations = Crud.GetParticipationsByGetTogether(selectedGetTogetherId);
     }
-
 
     private void SavePayment()
     {
-        if (selectedGetTogetherId == 0 ||
-            fromUserId == 0 ||
-            toUserId == 0)
-        {
-            message = "❌ همه فیلدها را کامل کنید";
-            return;
-        }
-
+        if (selectedGetTogetherId == 0 || fromUserId == 0 || toUserId == 0)
+        { message = "❌ همه فیلدها را کامل کنید"; return; }
         if (fromUserId == toUserId)
-        {
-            message = "❌ پرداخت‌کننده و دریافت‌کننده نمی‌توانند یکی باشند";
-            return;
-        }
-
+        { message = "❌ پرداخت‌کننده و دریافت‌کننده نمی‌توانند یکی باشند"; return; }
         if (amount <= 0)
-        {
-            message = "❌ مبلغ نامعتبر است";
-            return;
-        }
+        { message = "❌ مبلغ نامعتبر است"; return; }
 
-        Crud.AddPayment(
-            fromUserId,
-            toUserId,
-            amount,
-            selectedGetTogetherId
-        );
-
+        Crud.AddPayment(fromUserId, toUserId, amount, selectedGetTogetherId);
         message = "✅ پرداخت با موفقیت ثبت شد";
-
-        // reset
         amount = 0;
-        fromUserId = 0;
-        toUserId = 0;
+        fromUserId = toUserId = 0;
     }
-
 }

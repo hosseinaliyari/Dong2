@@ -2,101 +2,155 @@
 @using Dong.Application.Crud
 @using Dong.Application.Identity
 @using Dong.Domain.Entities
-@using Dong.Infrastructure.Crud
-
 @inject ICrud Crud
 @inject IIdentity Identity
 @rendermode InteractiveServer
 
+<div class="dong-topbar">
+    <div>
+        <div class="dong-page-title">هزینه‌ها</div>
+        <div class="dong-page-sub">ثبت و مشاهده هزینه‌های دورهمی</div>
+    </div>
+</div>
 
-<h3>انتخاب دورهمی</h3>
-<select class="form-select" @bind="selectedGetTogetherId" @bind:after="OnGetTogetherChanged">
-    <option value="0">انتخاب دورهمی</option>
-    @foreach (var g in getTogethersForOwner)
+<div class="dong-content">
+
+    <div class="dong-card">
+        <div class="dong-card-header">
+            <span class="header-icon">🧾</span>
+            ثبت هزینه جدید
+        </div>
+
+        <div class="dong-form-row">
+            <div class="dong-form-group">
+                <label>دورهمی</label>
+                <div class="dong-select-wrap">
+                    <select class="dong-select" @bind="selectedGetTogetherId" @bind:after="OnGetTogetherChanged">
+                        <option value="0">انتخاب دورهمی</option>
+                        @foreach (var g in getTogethersForOwner)
+                        {
+                            <option value="@g.Id">@g.NameGetTogether</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="dong-form-group">
+                <label>پرداخت‌کننده</label>
+                <div class="dong-select-wrap">
+                    <select class="dong-select" @bind="selectedUserId">
+                        <option value="0">انتخاب شخص</option>
+                        @foreach (var p in participations)
+                        {
+                            <option value="@p.UserId">@p.User.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="dong-form-row">
+            <div class="dong-form-group">
+                <label>شرح هزینه</label>
+                <input class="dong-input" placeholder="مثال: شام رستوران، بلیت سینما..." @bind="description" />
+            </div>
+            <div class="dong-form-group">
+                <label>مبلغ (تومان)</label>
+                <input class="dong-input" type="number" placeholder="0" @bind="cost" />
+            </div>
+        </div>
+
+        <button class="dong-btn dong-btn-primary" @onclick="Create">
+            ✓ &nbsp;ثبت هزینه
+        </button>
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="dong-alert @(message.StartsWith("✅") ? "dong-alert-success" : "dong-alert-danger")">
+                @message
+            </div>
+        }
+    </div>
+
+    @if (participations.Any() && selectedGetTogetherId > 0)
     {
-        <option value="@g.Id">@g.NameGetTogether</option>
+        <div class="dong-card">
+            <div class="dong-card-header">
+                <span class="header-icon">📋</span>
+                هزینه‌های این دورهمی
+            </div>
+            @{
+                var expenses = Crud.GetExpensesByGetTogether(selectedGetTogetherId);
+            }
+            @if (expenses != null && expenses.Any())
+            {
+                <div class="dong-table-wrap">
+                    <table class="dong-table">
+                        <thead>
+                            <tr>
+                                <th>شرح</th>
+                                <th>پرداخت‌کننده</th>
+                                <th>مبلغ (تومان)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var e in expenses)
+                            {
+                                <tr>
+                                    <td>@e.Description</td>
+                                    <td>@e.User?.Name</td>
+                                    <td class="text-danger">@e.Cost.ToString("N0")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="dong-empty">
+                    <div class="dong-empty-icon">🧾</div>
+                    <p>هنوز هزینه‌ای ثبت نشده</p>
+                </div>
+            }
+        </div>
     }
-</select>
 
+</div>
 
-<br />
-
-<h3>شخص هزینه‌کننده</h3>
-<select class="form-select" @bind="selectedUserId">
-    <option value="0">انتخاب هزینه‌کننده</option>
-
-    @foreach (var p in participations)
-    {
-        <option value="@p.UserId">
-            @p.User.Name
-        </option>
-    }
-</select>
-
-
-
-<br />
-<h3>هزینه</h3>
-<input class="form-control" placeholder="شرح هزینه انجام شده" @bind="description" />
-<br />
-<h3>مبلغ</h3>
-<input class="form-control" type="number" placeholder=" مبلغ هزینه شده" @bind="cost" />
-<br />
-
-<button class="btn btn-primary" @onclick="Create">
-    ثبت
-</button>
-<br />
-<p>@message</p>
-
-
-
-@code{
+@code {
     private List<GetTogether> getTogethersForOwner = new();
-    private List<Dong.Domain.Entities.Participation> participations = new();
+    private List<Participation> participations = new();
     private int selectedGetTogetherId;
     private int selectedUserId;
     private string description = string.Empty;
     private decimal cost;
-    private string message = string.Empty; 
-
+    private string message = string.Empty;
 
     protected override void OnInitialized()
     {
-        int owneruserId = Identity.UserId;
-        getTogethersForOwner = Crud.GetTogethersForOwner(owneruserId);
+        getTogethersForOwner = Crud.GetTogethersForOwner(Identity.UserId);
     }
+
     private void OnGetTogetherChanged()
     {
-        if (selectedGetTogetherId == 0)
-        {
-            participations.Clear();
-            return;
-        }
-
-        participations =
-            Crud.GetParticipationsByGetTogether(selectedGetTogetherId);
+        participations.Clear();
+        if (selectedGetTogetherId > 0)
+            participations = Crud.GetParticipationsByGetTogether(selectedGetTogetherId);
     }
-
 
     private void Create()
     {
         if (selectedGetTogetherId == 0 || selectedUserId == 0)
-        {
-            message = "❌ دورهمی و هزینه‌کننده را انتخاب کنید";
-            return;
-        }
+        { message = "❌ دورهمی و پرداخت‌کننده را انتخاب کنید"; return; }
+        if (string.IsNullOrWhiteSpace(description))
+        { message = "❌ شرح هزینه را وارد کنید"; return; }
+        if (cost <= 0)
+        { message = "❌ مبلغ را وارد کنید"; return; }
 
-        Crud.AddExpense(
-            selectedUserId,
-            description,
-            cost,
-            selectedGetTogetherId
-        );
-
-        message = "✅ هزینه ثبت شد";
+        Crud.AddExpense(selectedUserId, description, cost, selectedGetTogetherId);
+        message = "✅ هزینه با موفقیت ثبت شد";
+        description = string.Empty;
+        cost = 0;
+        selectedUserId = 0;
     }
-
-    
-
 }

@@ -6,69 +6,80 @@
 @inject IIdentity Identity
 @rendermode InteractiveServer
 
+<div class="dong-topbar">
+    <div>
+        <div class="dong-page-title">اعضا</div>
+        <div class="dong-page-sub">افزودن دوستان به دورهمی</div>
+    </div>
+</div>
 
-<h3>انتخاب دورهمی</h3>
-<select class="form-select" @bind="selectedGetTogetherId">
-    <option value="0">انتخاب دورهمی</option>
-    @foreach (var g in getTogethersForOwner)
-    {
-        <option value="@g.Id">@g.NameGetTogether</option>
-    }
-</select>
+<div class="dong-content">
 
-<h3>اضافه کردن دوستان به دورهمی</h3>
-<input class="form-control" placeholder="جستجو با شماره موبایل" @bind="mobile" />
+    <div class="dong-card">
+        <div class="dong-card-header">
+            <span class="header-icon">👥</span>
+            افزودن عضو جدید
+        </div>
 
-<button class="btn btn-primary mt-2" @onclick="SearchAdd">
-    اضافه کن
-</button>
+        <div class="dong-form-row single">
+            <div class="dong-form-group">
+                <label>دورهمی</label>
+                <div class="dong-select-wrap">
+                    <select class="dong-select" @bind="selectedGetTogetherId">
+                        <option value="0">انتخاب دورهمی</option>
+                        @foreach (var g in getTogethersForOwner)
+                        {
+                            <option value="@g.Id">@g.NameGetTogether</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
 
-<p>@message</p>
+        <div class="dong-form-row single">
+            <div class="dong-form-group">
+                <label>شماره موبایل دوست</label>
+                <input class="dong-input" placeholder="مثال: 09121234567" @bind="mobile" @bind:event="oninput" />
+            </div>
+        </div>
+
+        <button class="dong-btn dong-btn-primary" @onclick="SearchAdd">
+            👤 &nbsp;اضافه کردن به دورهمی
+        </button>
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="dong-alert @(message.StartsWith("✅") ? "dong-alert-success" : "dong-alert-danger")">
+                @message
+            </div>
+        }
+    </div>
+
+</div>
 
 @code {
     private List<GetTogether> getTogethersForOwner = new();
     private int selectedGetTogetherId;
     private string mobile = string.Empty;
-    private string message = "";
+    private string message = string.Empty;
 
     protected override void OnInitialized()
     {
-        int userId = Identity.UserId;
-
-        getTogethersForOwner = Crud.GetTogethersForOwner(userId);
+        getTogethersForOwner = Crud.GetTogethersForOwner(Identity.UserId);
     }
 
     private void SearchAdd()
     {
-        if (selectedGetTogetherId == 0)
-        {
-            message = "❌ لطفاً یک دورهمی انتخاب کنید";
-            return;
-        }
+        if (selectedGetTogetherId == 0) { message = "❌ لطفاً یک دورهمی انتخاب کنید"; return; }
+        if (string.IsNullOrWhiteSpace(mobile)) { message = "❌ لطفاً شماره موبایل را وارد کنید"; return; }
 
-        if (string.IsNullOrWhiteSpace(mobile))
-        {
-            message = "❌ لطفاً شماره موبایل را وارد کنید";
-            return;
-        }
-
-        // پیدا کردن کاربر
         var user = Crud.FindUserByMobile(mobile);
-        if (user == null)
-        {
-            message = $"❌ کاربری با شماره موبایل {mobile} پیدا نشد";
-            return;
-        }
+        if (user == null) { message = $"❌ کاربری با شماره {mobile} پیدا نشد"; return; }
 
-        // افزودن Participation
         bool success = Crud.AddParticipations(selectedGetTogetherId, user.Value, out string error);
-        if (!success)
-        {
-            message = error;
-            return;
-        }
+        if (!success) { message = error; return; }
 
-        message = $"✅ کاربر با شماره موبایل {mobile} به دورهمی اضافه شد";
+        message = $"✅ کاربر با شماره {mobile} به دورهمی اضافه شد";
         mobile = string.Empty;
     }
 }

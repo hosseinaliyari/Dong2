@@ -1,7 +1,62 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<div class="dong-topbar">
+    <div>
+        <div class="dong-page-title">خانه</div>
+        <div class="dong-page-sub">خلاصه وضعیت مالی شما</div>
+    </div>
+</div>
 
-<h1>برنامه دنگ و دونگ</h1>
+<div class="dong-content">
 
-حساب کتاب همه دورهمی ها و نشست هات رو یک جا داشته باش
+    <div class="dong-page-header">
+        <div>
+            <h1>سلام 👋</h1>
+            <p>به برنامه دنگ خوش اومدی — حساب‌کتاب همه دورهمی‌هات یه‌جا</p>
+        </div>
+    </div>
+
+    <div class="dong-stats">
+        <div class="dong-stat">
+            <div class="dong-stat-label">دورهمی‌های فعال</div>
+            <div class="dong-stat-val">—</div>
+            <span class="dong-stat-badge badge-purple">دورهمی</span>
+        </div>
+        <div class="dong-stat">
+            <div class="dong-stat-label">هزینه‌های ثبت‌شده</div>
+            <div class="dong-stat-val">—</div>
+            <span class="dong-stat-badge badge-green">هزینه</span>
+        </div>
+        <div class="dong-stat">
+            <div class="dong-stat-label">تسویه‌های انجام‌شده</div>
+            <div class="dong-stat-val">—</div>
+            <span class="dong-stat-badge badge-gray">تسویه</span>
+        </div>
+    </div>
+
+    <div class="dong-card">
+        <div class="dong-card-header">
+            <span class="header-icon">💡</span>
+            راهنمای سریع
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div style="background:var(--primary-light);border-radius:var(--radius);padding:1rem;">
+                <div style="font-size:13px;font-weight:600;color:var(--primary-dark);margin-bottom:4px;">مرحله ۱</div>
+                <div style="font-size:13px;color:var(--text2);">یه دورهمی بساز از منوی دورهمی‌ها</div>
+            </div>
+            <div style="background:var(--success-light);border-radius:var(--radius);padding:1rem;">
+                <div style="font-size:13px;font-weight:600;color:var(--success-dark);margin-bottom:4px;">مرحله ۲</div>
+                <div style="font-size:13px;color:var(--text2);">دوستات رو با موبایل اضافه کن</div>
+            </div>
+            <div style="background:var(--warning-light);border-radius:var(--radius);padding:1rem;">
+                <div style="font-size:13px;font-weight:600;color:#92400E;margin-bottom:4px;">مرحله ۳</div>
+                <div style="font-size:13px;color:var(--text2);">هزینه‌ها رو ثبت کن</div>
+            </div>
+            <div style="background:var(--surface3);border-radius:var(--radius);padding:1rem;">
+                <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;">مرحله ۴</div>
+                <div style="font-size:13px;color:var(--text2);">سهم هر نفر رو محاسبه و تسویه کن</div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,23 +1,67 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager Nav
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<div class="dong-layout">
 
-    <main>
-        @* <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div> *@
+    <!-- Sidebar -->
+    <aside class="dong-sidebar">
+        <div class="dong-logo">
+            <div class="dong-logo-icon">💸</div>
+            <div>
+                <div class="dong-logo-text">دنگ</div>
+                <div class="dong-logo-sub">مدیریت هزینه مشترک</div>
+            </div>
+        </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
+        <nav class="dong-nav">
+            <div class="dong-nav-group-label">اصلی</div>
+            <NavLink class="dong-nav-item" href="/" Match="NavLinkMatch.All">
+                <span class="nav-icon">🏠</span> خانه
+            </NavLink>
+            <NavLink class="dong-nav-item" href="/gettogethers">
+                <span class="nav-icon">🎉</span> دورهمی‌ها
+            </NavLink>
+            <NavLink class="dong-nav-item" href="/participation">
+                <span class="nav-icon">👥</span> اعضا
+            </NavLink>
+
+            <div class="dong-nav-group-label" style="margin-top:0.75rem">مالی</div>
+            <NavLink class="dong-nav-item" href="/expenses">
+                <span class="nav-icon">🧾</span> هزینه‌ها
+            </NavLink>
+            <NavLink class="dong-nav-item" href="/shares">
+                <span class="nav-icon">🧮</span> محاسبه سهم
+            </NavLink>
+            <NavLink class="dong-nav-item" href="/payment">
+                <span class="nav-icon">💳</span> پرداخت
+            </NavLink>
+            <NavLink class="dong-nav-item" href="/settlements">
+                <span class="nav-icon">✅</span> تسویه حساب
+            </NavLink>
+
+            <div class="dong-nav-group-label" style="margin-top:0.75rem">گزارش</div>
+            <NavLink class="dong-nav-item" href="/report">
+                <span class="nav-icon">📊</span> گزارش تفصیلی
+            </NavLink>
+            <NavLink class="dong-nav-item" href="/reportNew">
+                <span class="nav-icon">📈</span> گزارش خلاصه
+            </NavLink>
+        </nav>
+
+        <div class="dong-sidebar-footer">
+            <div class="dong-user-chip">
+                <div class="dong-avatar">کا</div>
+                <div>
+                    <div class="dong-user-name">کاربر</div>
+                    <div class="dong-user-phone">در حال استفاده</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="dong-main">
+        @Body
     </main>
-</div>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
 </div>

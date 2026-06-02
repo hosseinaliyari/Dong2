@@ -7,6 +7,7 @@ namespace Dong.Application.Crud
     public interface ICrud
     {
         public void AddUser(string name, string mobile, string pass);
+        public List<User> GetUsers();
         public bool AddGetTogethers(string name, int userId, out string error);
         public bool AddParticipations(int getTogetherId, int userId, out string error);
         public List<Participation> GetParticipationsByGetTogether(int getTogetherId);

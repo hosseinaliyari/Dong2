@@ -5,20 +5,58 @@
 @inject IIdentity Identity
 @rendermode InteractiveServer
 
-
     
 
-<h3>ایجاد دورهمی</h3>
-
+@* <h3>ایجاد دورهمی</h3>
 <input class="form-control" placeholder="نام دورهمی" @bind="name" />
 <br />
-
-
 <button class="btn btn-primary" @onclick="Create">
     ثبت
 </button>
 <br />
-<p>@message</p>
+<p>@message</p> *@
+
+
+<div class="dong-topbar">
+    <div>
+        <div class="dong-page-title">دورهمی‌ها</div>
+        <div class="dong-page-sub">مدیریت گروه‌های هزینه مشترک</div>
+    </div>
+</div>
+
+<div class="dong-content">
+
+    <div class="dong-card">
+        <div class="dong-card-header">
+            <span class="header-icon">➕</span>
+            ایجاد دورهمی جدید
+        </div>
+        <div class="dong-form-row single">
+            <div class="dong-form-group">
+                <label>نام دورهمی</label>
+                <input class="dong-input" placeholder="مثال: شب یلدا، سفر کیش، جشن تولد..." @bind="name" />
+            </div>
+        </div>
+        <button class="dong-btn dong-btn-primary" @onclick="Create">
+            ✓ &nbsp;ثبت دورهمی
+        </button>
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="dong-alert @(message.StartsWith("✅") ? "dong-alert-success" : "dong-alert-danger")">
+                @message
+            </div>
+        }
+    </div>
+
+</div>
+
+
+
+
+
+
+
 
 
 @code {

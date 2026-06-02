@@ -1,88 +1,109 @@
 ﻿@page "/shares"
 @using Dong.Application.Calculator
 @using Dong.Application.Crud
-@using Dong.Domain.Entities
 @using Dong.Application.Identity
+@using Dong.Domain.Entities
 @inject ICrud Crud
 @inject IShareCalculator ShareCalculator
 @inject IIdentity Identity
 @rendermode InteractiveServer
 
+<div class="dong-topbar">
+    <div>
+        <div class="dong-page-title">محاسبه سهم</div>
+        <div class="dong-page-sub">سهم هر نفر از هزینه‌های مشترک</div>
+    </div>
+</div>
 
+<div class="dong-content">
 
-<h3>محاسبه سهم افراد</h3>
+    <div class="dong-card">
+        <div class="dong-card-header">
+            <span class="header-icon">🧮</span>
+            محاسبه سهم افراد
+        </div>
 
-<select class="form-select"
-        @bind="selectedGetTogetherId">
-    <option value="0">انتخاب دورهمی</option>
-    @foreach (var g in getTogethersForOwner)
+        <div class="dong-form-row single">
+            <div class="dong-form-group">
+                <label>دورهمی</label>
+                <div class="dong-select-wrap">
+                    <select class="dong-select" @bind="selectedGetTogetherId">
+                        <option value="0">انتخاب دورهمی</option>
+                        @foreach (var g in getTogethersForOwner)
+                        {
+                            <option value="@g.Id">@g.NameGetTogether</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button class="dong-btn dong-btn-success" @onclick="Calculate">
+            🧮 &nbsp;محاسبه و نمایش
+        </button>
+
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="dong-alert @(message.StartsWith("✅") ? "dong-alert-success" : "dong-alert-danger")">
+                @message
+            </div>
+        }
+    </div>
+
+    @if (shares.Any())
     {
-        <option value="@g.Id">@g.NameGetTogether</option>
+        <div class="dong-card">
+            <div class="dong-card-header">
+                <span class="header-icon">📊</span>
+                نتیجه محاسبه سهم
+            </div>
+            <div class="dong-table-wrap">
+                <table class="dong-table">
+                    <thead>
+                        <tr>
+                            <th>نام</th>
+                            <th>پرداخت کرده (ت)</th>
+                            <th>سهم هر نفر (ت)</th>
+                            <th>بستانکار / بدهکار (ت)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in shares)
+                        {
+                            <tr>
+                                <td><strong>@s.User?.Name</strong></td>
+                                <td>@s.Cost.ToString("N0")</td>
+                                <td>@s.PerShare.ToString("N0")</td>
+                                <td class="@(s.DebitCredit >= 0 ? "text-success" : "text-danger")">
+                                    @(s.DebitCredit >= 0 ? "+" : "")@s.DebitCredit.ToString("N0")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     }
-</select>
 
-<button class="btn btn-success mt-3" @onclick="Calculate">
-    محاسبه و نمایش
-</button>
-
-<p class="text-danger">@message</p>
-
-
-
-
-
-@if (shares.Any())
-{
-    <table class="table table-bordered table-striped mt-4 text-center">
-        <thead class="table-dark">
-            <tr>
-                <th>نام</th>
-                <th>پرداخت کرده</th>
-                <th>سهم هر نفر</th>
-                <th>بستانکار / بدهکار</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var s in sh)
-            {
-                <tr>
-                    <td>@s.User.Name</td>
-                    <td>@s.Cost</td>
-                    <td>@s.PerShare</td>
-                    <td class="@(s.DebitCredit >= 0 ? "text-success" : "text-danger")">
-                        @s.DebitCredit
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-
+</div>
 
 @code {
     private List<GetTogether> getTogethersForOwner = new();
     private List<Share> shares = new();
-    private List<Share> sh = new();
     private int selectedGetTogetherId;
     private string message = string.Empty;
 
     protected override void OnInitialized()
     {
-        int ownerId = Identity.UserId;
-        getTogethersForOwner = Crud.GetTogethersForOwner(ownerId);
+        getTogethersForOwner = Crud.GetTogethersForOwner(Identity.UserId);
     }
 
     private void Calculate()
     {
-        if (selectedGetTogetherId == 0)
-        {
-            message = "❌ لطفاً یک دورهمی انتخاب کنید";
-            return;
-        }
+        if (selectedGetTogetherId == 0) { message = "❌ لطفاً یک دورهمی انتخاب کنید"; return; }
 
-        shares = ShareCalculator.CalculateAndSave(selectedGetTogetherId);
-        sh = Crud.GetShare(selectedGetTogetherId);
-        message = "✅ محاسبه انجام شد";
+        ShareCalculator.CalculateAndSave(selectedGetTogetherId);
+        shares = Crud.GetShare(selectedGetTogetherId);
+        message = "✅ محاسبه با موفقیت انجام شد";
     }
 }

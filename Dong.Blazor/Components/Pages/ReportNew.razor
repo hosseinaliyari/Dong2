@@ -10,9 +10,21 @@
 @inject IIdentity Identity
 @rendermode InteractiveServer
 
+
+<select class="form-select" @bind="mobile" @bind:after="OnGetTogetherChanged">
+    <option value="">انتخاب شخص</option>
+    @foreach (var g in users)
+    {
+        <option value="@g.Mobile">@g.Name</option> 
+    }
+</select>
+<br />
+
 <input class="form-control"
        placeholder="شماره موبایل"
        @bind="mobile" />
+
+
 <button class="btn btn-primary mt-2" @onclick="Search">
     نمایش گزارش
 </button>
@@ -22,7 +34,8 @@
         <tr>
             <th>  </th>
             <th>به/از</th>
-            <th>پرداخت کن (عدد مثبت) / دریافت کن (عدد منفی) </th>
+            <th>پرداخت کن   </th>
+            <th>دریافت کن  </th>
         </tr>
     </thead>
     <tbody>
@@ -31,8 +44,11 @@
             <tr>
                 <td>@r.FromName</td>
                 <td>@r.ToName</td>
-                <td class="@(r.Balance < 0 ? "text-danger" : "text-success")">
-                    @r.Balance.ToString("N0")
+                <td class="text-danger">
+                    @(r.Balance < 0 ? 0: r.Balance.ToString("N0"))
+                </td>
+                <td class="text-success">
+                    @(r.Balance < 0 ? (r.Balance * -1).ToString("N0") : 0)
                 </td>
             </tr>
         }
@@ -40,18 +56,4 @@
 </table>
 
 
-@code {
-    private List<FinancialLedger> reports = new();
-    private string mobile = string.Empty;
-    private string message = string.Empty;
 
-
-    private void Search()
-    {
-        reports = Crud.GetUserFinalReport(mobile);
-        if (reports == null)
-        {
-            message = "❌ کاربری با این شماره یافت نشد";
-        }
-    }
-}

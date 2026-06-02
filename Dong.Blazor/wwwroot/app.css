@@ -1,3 +1,6 @@
+﻿
+
+/*
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -57,4 +60,659 @@ h1:focus {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
+}
+    */
+
+/* =============================================
+   DONG UI — Shared Stylesheet
+   فارسی RTL | روشن و مدرن
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary: #6C63FF;
+    --primary-light: #EEF0FF;
+    --primary-mid: #B0ABFF;
+    --primary-dark: #4B44CC;
+    --accent: #FF6584;
+    --accent-light: #FFF0F3;
+    --success: #22C55E;
+    --success-light: #DCFCE7;
+    --success-dark: #16A34A;
+    --danger: #EF4444;
+    --danger-light: #FEE2E2;
+    --danger-dark: #DC2626;
+    --warning: #F59E0B;
+    --warning-light: #FEF3C7;
+    --bg: #F5F7FF;
+    --surface: #FFFFFF;
+    --surface2: #F0F2FF;
+    --surface3: #E8EBFF;
+    --text: #1A1B2E;
+    --text2: #5A5B7A;
+    --text3: #9899B5;
+    --border: rgba(108, 99, 255, 0.12);
+    --border2: rgba(108, 99, 255, 0.22);
+    --radius: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --shadow-sm: 0 1px 4px rgba(108,99,255,0.08);
+    --shadow: 0 4px 16px rgba(108,99,255,0.12);
+    --shadow-lg: 0 8px 32px rgba(108,99,255,0.16);
+    --sidebar-w: 240px;
+    --topbar-h: 64px;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    direction: rtl;
+    font-family: 'Vazirmatn', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ---- LAYOUT ---- */
+.dong-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ---- SIDEBAR ---- */
+.dong-sidebar {
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+}
+
+.dong-logo {
+    padding: 1.5rem 1.25rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.dong-logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(108,99,255,0.35);
+    flex-shrink: 0;
+}
+
+.dong-logo-text {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.dong-logo-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+}
+
+.dong-nav {
+    flex: 1;
+    padding: 1rem 0.75rem;
+    overflow-y: auto;
+}
+
+.dong-nav-group-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    padding: 0.5rem 0.75rem 0.25rem;
+    text-transform: uppercase;
+}
+
+.dong-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text2);
+    margin-bottom: 3px;
+    transition: all 0.18s;
+    text-decoration: none;
+}
+
+    .dong-nav-item:hover {
+        background: var(--surface2);
+        color: var(--text);
+    }
+
+    .dong-nav-item.active {
+        background: var(--primary-light);
+        color: var(--primary-dark);
+        font-weight: 600;
+    }
+
+    .dong-nav-item .nav-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        background: transparent;
+        flex-shrink: 0;
+        transition: all 0.18s;
+    }
+
+    .dong-nav-item.active .nav-icon {
+        background: var(--primary);
+        color: #fff;
+    }
+
+.dong-sidebar-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+}
+
+.dong-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+}
+
+.dong-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary-mid));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-dark);
+    flex-shrink: 0;
+}
+
+.dong-user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.dong-user-phone {
+    font-size: 11px;
+    color: var(--text3);
+    direction: ltr;
+    text-align: right;
+}
+
+/* ---- MAIN ---- */
+.dong-main {
+    margin-right: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.dong-topbar {
+    height: var(--topbar-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: var(--shadow-sm);
+}
+
+.dong-page-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.dong-page-sub {
+    font-size: 12px;
+    color: var(--text3);
+}
+
+.dong-content {
+    padding: 2rem;
+    flex: 1;
+}
+
+/* ---- CARDS ---- */
+.dong-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.dong-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+    .dong-card-header .header-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        background: var(--primary-light);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+/* ---- STATS ---- */
+.dong-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.dong-stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s;
+}
+
+    .dong-stat:hover {
+        box-shadow: var(--shadow);
+    }
+
+.dong-stat-label {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 6px;
+}
+
+.dong-stat-val {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.dong-stat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-purple {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.badge-green {
+    background: var(--success-light);
+    color: var(--success-dark);
+}
+
+.badge-red {
+    background: var(--danger-light);
+    color: var(--danger-dark);
+}
+
+.badge-gray {
+    background: var(--surface3);
+    color: var(--text2);
+}
+
+/* ---- FORM ---- */
+.dong-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+    .dong-form-row.single {
+        grid-template-columns: 1fr;
+    }
+
+    .dong-form-row.triple {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+.dong-form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 6px;
+}
+
+.dong-input,
+.dong-select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border2);
+    background: var(--surface2);
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: all 0.18s;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+    .dong-input:focus,
+    .dong-select:focus {
+        border-color: var(--primary);
+        background: var(--surface);
+        box-shadow: 0 0 0 3px rgba(108,99,255,0.12);
+    }
+
+    .dong-input::placeholder {
+        color: var(--text3);
+    }
+
+.dong-select-wrap {
+    position: relative;
+}
+
+    .dong-select-wrap::after {
+        content: "▾";
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text3);
+        pointer-events: none;
+        font-size: 13px;
+    }
+
+/* ---- BUTTONS ---- */
+.dong-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+    text-decoration: none;
+}
+
+    .dong-btn:active {
+        transform: scale(0.97);
+    }
+
+.dong-btn-primary {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(108,99,255,0.3);
+}
+
+    .dong-btn-primary:hover {
+        background: var(--primary-dark);
+        box-shadow: 0 6px 18px rgba(108,99,255,0.4);
+    }
+
+.dong-btn-success {
+    background: var(--success);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(34,197,94,0.25);
+}
+
+    .dong-btn-success:hover {
+        background: var(--success-dark);
+    }
+
+.dong-btn-warning {
+    background: var(--warning);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.25);
+}
+
+.dong-btn-ghost {
+    background: transparent;
+    color: var(--primary);
+    border: 1.5px solid var(--border2);
+}
+
+    .dong-btn-ghost:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+    }
+
+.dong-btn-sm {
+    padding: 7px 14px;
+    font-size: 13px;
+}
+
+.dong-btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: var(--radius);
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border);
+}
+
+    .dong-btn-icon:hover {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+/* ---- TABLE ---- */
+.dong-table-wrap {
+    overflow-x: auto;
+}
+
+.dong-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+    .dong-table th {
+        text-align: right;
+        padding: 10px 16px;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text3);
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+    }
+
+    .dong-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+        vertical-align: middle;
+    }
+
+    .dong-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .dong-table tbody tr:hover td {
+        background: var(--surface2);
+    }
+
+.text-success {
+    color: var(--success-dark);
+    font-weight: 600;
+}
+
+.text-danger {
+    color: var(--danger-dark);
+    font-weight: 600;
+}
+
+/* ---- CHIPS ---- */
+.dong-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.chip-purple {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.chip-green {
+    background: var(--success-light);
+    color: var(--success-dark);
+}
+
+.chip-red {
+    background: var(--danger-light);
+    color: var(--danger-dark);
+}
+
+/* ---- ALERT ---- */
+.dong-alert {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dong-alert-success {
+    background: var(--success-light);
+    color: var(--success-dark);
+    border: 1px solid rgba(34,197,94,0.2);
+}
+
+.dong-alert-danger {
+    background: var(--danger-light);
+    color: var(--danger-dark);
+    border: 1px solid rgba(239,68,68,0.2);
+}
+
+/* ---- PAGE HEADER ---- */
+.dong-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+    .dong-page-header h1 {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .dong-page-header p {
+        font-size: 13px;
+        color: var(--text3);
+        margin-top: 4px;
+    }
+
+/* ---- DIVIDER ---- */
+.dong-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1rem 0;
+}
+
+/* ---- EMPTY STATE ---- */
+.dong-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text3);
+}
+
+.dong-empty-icon {
+    font-size: 40px;
+    margin-bottom: 0.75rem;
+    color: var(--primary-mid);
+}
+
+.dong-empty p {
+    font-size: 14px;
+}
+
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border2);
+    border-radius: 99px;
 }

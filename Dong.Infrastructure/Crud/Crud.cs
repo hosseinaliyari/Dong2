@@ -244,11 +244,16 @@ namespace Dong.Infrastructure.Crud
                     FromName = user.Where(X => X.Id == item.FromUserId).FirstOrDefault().Name,
                     FromUserId = item.FromUserId,
                     getTogether = item.getTogether,
-                    GetTogetherId = item.GetTogetherId,
+                    GetTogetherId = item.GetTogetherId
                 });
             }
 
             return finalReport;
+        }
+
+        public List<User> GetUsers()
+        {
+            return _context.Users.ToList();
         }
     }
 }
